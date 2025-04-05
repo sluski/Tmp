@@ -2,10 +2,12 @@ package com.example.demo.model;
 
 import lombok.Data;
 
+import java.util.Map;
+
 @Data
 public class Bill {
     private long paidByUserId;
-    private double value; // todo: BigDecimal?
+    private double value;
     private String currency;
-    private Split split;
+    private Map<Long, Double> split; // userId : value
 }

@@ -1,11 +1,8 @@
 package com.example.demo;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -19,10 +16,15 @@ public class BillingServiceTest {
     @InjectMocks
     private BillingService billingService;
 
-    @Test
-    public void beforeAll() {
-//        Mockito.when()
-    }
+    /*
+        Przypadki testowe:
+        - poprawny podział
+        - sumaryczna wartość podziału jest mniejsza niż pełna kwota rachunku
+        - sumaryczna wartość podziału jest większa niż pełna kwota rachunku
+        - podziału przyjmuje wartości ujemne
+        - brak dodatkowych osób do podziału
+        - błędna waluta
+     */
 
 
 
