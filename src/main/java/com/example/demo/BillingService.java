@@ -5,6 +5,8 @@ import com.example.demo.model.Debt;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Map;
 
 
@@ -16,14 +18,22 @@ public class BillingService {
     private final DebtRepository debtRepository;
 
     public void addBill(Bill bill) {
-        double exchangeRate = 1;
-        if(!bill.getCurrency().equals("PLN")) { // domyślnie tu jest enum
-            exchangeRate = exchangeService.getExchangeRate(bill.getCurrency(), "PLN");
+        BigDecimal exchangeRate = BigDecimal.ONE;
+
+        if (!bill.getCurrency().equals("PLN")) {
+            double rate = exchangeService.getExchangeRate(bill.getCurrency(), "PLN");
+            exchangeRate = BigDecimal.valueOf(rate);
         }
 
-        for(Map.Entry<Long, Double> entry : bill.getSplit().entrySet()) {
-            double amountInMainCurrency = entry.getValue() * exchangeRate;
-            debtRepository.save(new Debt(entry.getKey(), bill.getPaidByUserId(), amountInMainCurrency)); // zapis należności do bazy
+        for (Map.Entry<Long, Double> entry : bill.getSplit().entrySet()) {
+            BigDecimal amount = BigDecimal.valueOf(entry.getValue());
+            BigDecimal amountInMainCurrency = amount.multiply(exchangeRate).setScale(2, RoundingMode.HALF_UP);
+
+            debtRepository.save(new Debt(
+                    entry.getKey(),
+                    bill.getPaidByUserId(),
+                    amountInMainCurrency
+            ));
         }
     }
 
